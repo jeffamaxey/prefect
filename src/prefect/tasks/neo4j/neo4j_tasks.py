@@ -208,7 +208,7 @@ class Neo4jRunCypherQueryTask(Task):
         elif db_name_env_var and db_name_env_var not in os.environ.keys():
             msg = f"`{db_name_env_var}` not found in environment variables."
             raise ValueError(msg)
-        elif db_name_env_var and db_name_env_var in os.environ.keys():
+        elif db_name_env_var and db_name_env_var in os.environ:
             neo4j_db_name = os.environ[db_name_env_var]
 
         if not cypher_query:

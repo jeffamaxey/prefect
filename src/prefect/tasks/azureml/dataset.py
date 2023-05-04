@@ -73,7 +73,7 @@ class DatasetCreateFromDelimitedFiles(Task):
         self.datastore = datastore
         self.path = path
         self.dataset_description = dataset_description
-        self.dataset_tags = dataset_tags or dict()
+        self.dataset_tags = dataset_tags or {}
         self.include_path = include_path
         self.infer_column_types = infer_column_types
         self.set_column_types = set_column_types
@@ -162,7 +162,7 @@ class DatasetCreateFromDelimitedFiles(Task):
         if not isinstance(path, list):
             path = [path]
 
-        dataset_tags = dataset_tags or dict()
+        dataset_tags = dataset_tags or {}
 
         dataset = azureml.core.dataset.Dataset.Tabular.from_delimited_files(
             path=[(datastore, path_item) for path_item in path],
@@ -245,7 +245,7 @@ class DatasetCreateFromParquetFiles(Task):
         self.datastore = datastore
         self.path = path
         self.dataset_description = dataset_description
-        self.dataset_tags = dataset_tags or dict()
+        self.dataset_tags = dataset_tags or {}
         self.include_path = include_path
         self.set_column_types = set_column_types
         self.fine_grain_timestamp = fine_grain_timestamp
@@ -319,7 +319,7 @@ class DatasetCreateFromParquetFiles(Task):
         if not isinstance(path, list):
             path = [path]
 
-        dataset_tags = dataset_tags or dict()
+        dataset_tags = dataset_tags or {}
 
         dataset = azureml.core.dataset.Dataset.Tabular.from_parquet_files(
             path=[(datastore, path_item) for path_item in path],
@@ -378,7 +378,7 @@ class DatasetCreateFromFiles(Task):
         self.datastore = datastore
         self.path = path
         self.dataset_description = dataset_description
-        self.dataset_tags = dataset_tags or dict()
+        self.dataset_tags = dataset_tags or {}
         self.create_new_version = create_new_version
 
         super().__init__(**kwargs)
@@ -429,7 +429,7 @@ class DatasetCreateFromFiles(Task):
         if not isinstance(path, list):
             path = [path]
 
-        dataset_tags = dataset_tags or dict()
+        dataset_tags = dataset_tags or {}
 
         dataset = azureml.core.dataset.Dataset.File.from_files(
             path=[(datastore, path_item) for path_item in path]

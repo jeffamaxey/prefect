@@ -78,9 +78,7 @@ class CodeCommit(Storage):
             decoded_contents = file_contents.decode("utf-8")
         except Exception as exc:
             self.logger.error(
-                "Error retrieving file contents from {} on repo {}. Ensure the file exists.".format(
-                    flow_location, self.repo
-                )
+                f"Error retrieving file contents from {flow_location} on repo {self.repo}. Ensure the file exists."
             )
             raise exc
 
@@ -103,9 +101,7 @@ class CodeCommit(Storage):
         """
         if flow.name in self:
             raise ValueError(
-                'Name conflict: Flow with the name "{}" is already present in this storage.'.format(
-                    flow.name
-                )
+                f'Name conflict: Flow with the name "{flow.name}" is already present in this storage.'
             )
 
         self.flows[flow.name] = self.path  # type: ignore

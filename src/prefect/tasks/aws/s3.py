@@ -29,11 +29,7 @@ class S3Download(Task):
     def __init__(self, bucket: str = None, boto_kwargs: dict = None, **kwargs):
         self.bucket = bucket
 
-        if boto_kwargs is None:
-            self.boto_kwargs = {}
-        else:
-            self.boto_kwargs = boto_kwargs
-
+        self.boto_kwargs = {} if boto_kwargs is None else boto_kwargs
         super().__init__(**kwargs)
 
     @defaults_from_attrs("bucket")
@@ -109,11 +105,7 @@ class S3Upload(Task):
     def __init__(self, bucket: str = None, boto_kwargs: dict = None, **kwargs):
         self.bucket = bucket
 
-        if boto_kwargs is None:
-            self.boto_kwargs = {}
-        else:
-            self.boto_kwargs = boto_kwargs
-
+        self.boto_kwargs = {} if boto_kwargs is None else boto_kwargs
         super().__init__(**kwargs)
 
     @defaults_from_attrs("bucket")
@@ -244,15 +236,11 @@ class S3List(Task):
         # create the parts of JMESPath query
         if last_modified_end:
             filters.append(
-                "(to_string(LastModified) <= '\"{}\"')".format(
-                    pendulum.parse(last_modified_end).to_datetime_string()
-                )
+                f"""(to_string(LastModified) <= '\"{pendulum.parse(last_modified_end).to_datetime_string()}\"')"""
             )
         if last_modified_begin:
             filters.append(
-                "(to_string(LastModified) >= '\"{}\"')".format(
-                    pendulum.parse(last_modified_begin).to_datetime_string()
-                )
+                f"""(to_string(LastModified) >= '\"{pendulum.parse(last_modified_begin).to_datetime_string()}\"')"""
             )
 
         if filters:

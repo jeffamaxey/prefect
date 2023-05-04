@@ -300,7 +300,7 @@ class TestMagicOperatorMethods:
 
     def test_right_gt(self):
         with Flow(name="test") as f:
-            z = 10 > Parameter("x")
+            z = Parameter("x") < 10
         state = f.run(parameters=dict(x=10))
         assert state.result[z].result is False
 
@@ -321,7 +321,7 @@ class TestMagicOperatorMethods:
 
     def test_right_gte(self):
         with Flow(name="test") as f:
-            z = 10 >= Parameter("x")
+            z = Parameter("x") <= 10
         state = f.run(parameters=dict(x=10))
         assert state.result[z].result is True
 
@@ -342,7 +342,7 @@ class TestMagicOperatorMethods:
 
     def test_right_lt(self):
         with Flow(name="test") as f:
-            z = 10 < Parameter("x")
+            z = Parameter("x") > 10
         state = f.run(parameters=dict(x=10))
         assert state.result[z].result is False
 
@@ -363,7 +363,7 @@ class TestMagicOperatorMethods:
 
     def test_right_lte(self):
         with Flow(name="test") as f:
-            z = 10 <= Parameter("x")
+            z = Parameter("x") >= 10
         state = f.run(parameters=dict(x=10))
         assert state.result[z].result is True
 

@@ -136,7 +136,7 @@ class CreateContainer(Task):
             environment=environment,
             volumes=volumes,
             host_config=host_config,
-            **(extra_docker_kwargs or dict()),
+            **extra_docker_kwargs or {}
         )
 
         container_id = container.get("Id")
@@ -215,7 +215,7 @@ class GetContainerLogs(Task):
         client = docker.APIClient(base_url=docker_server_url, version="auto")
 
         api_result = client.logs(
-            container=container_id, **(extra_docker_kwargs or dict())
+            container=container_id, **extra_docker_kwargs or {}
         ).decode()
 
         self.logger.debug(f"Gathered logs from container {container_id}")
@@ -293,7 +293,7 @@ class ListContainers(Task):
         self.logger.debug("Listing all containers")
         client = docker.APIClient(base_url=docker_server_url, version="auto")
         api_result = client.containers(
-            all=all_containers, filters=filters, **(extra_docker_kwargs or dict())
+            all=all_containers, filters=filters, **extra_docker_kwargs or {}
         )
         self.logger.debug("Listed all containers")
         return api_result
@@ -361,7 +361,7 @@ class StartContainer(Task):
         self.logger.debug(f"Starting container {container_id}")
         client = docker.APIClient(base_url=docker_server_url, version="auto")
 
-        client.start(container=container_id, **(extra_docker_kwargs or dict()))
+        client.start(container=container_id, **extra_docker_kwargs or {})
         self.logger.debug(f"Started container {container_id}")
 
 
@@ -427,7 +427,7 @@ class StopContainer(Task):
         self.logger.debug(f"Stopping container {container_id}")
         client = docker.APIClient(base_url=docker_server_url, version="auto")
 
-        client.stop(container=container_id, **(extra_docker_kwargs or dict()))
+        client.stop(container=container_id, **extra_docker_kwargs or {})
         self.logger.debug(f"Stopped container {container_id}")
 
 
@@ -493,9 +493,7 @@ class RemoveContainer(Task):
         self.logger.debug(f"Removing container {container_id}")
         client = docker.APIClient(base_url=docker_server_url, version="auto")
 
-        client.remove_container(
-            container=container_id, **(extra_docker_kwargs or dict())
-        )
+        client.remove_container(container=container_id, **extra_docker_kwargs or {})
         self.logger.debug(f"Removed container {container_id}")
 
 
@@ -575,7 +573,7 @@ class WaitOnContainer(Task):
         self.logger.debug(f"Waiting on container {container_id}")
         client = docker.APIClient(base_url=docker_server_url, version="auto")
 
-        result = client.wait(container=container_id, **(extra_docker_kwargs or dict()))
+        result = client.wait(container=container_id, **extra_docker_kwargs or {})
         if raise_on_exit_code and (
             (result.get("Error") is not None) or result.get("StatusCode")
         ):

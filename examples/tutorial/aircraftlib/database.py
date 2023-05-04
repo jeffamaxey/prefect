@@ -81,9 +81,9 @@ class Database:
         Base.metadata.tables[Airline.__tablename__].drop(bind=self.engine)
         Base.metadata.tables[Airline.__tablename__].create(bind=self.engine)
 
-        objects = []
-        for identity, name in airlines.items():
-            objects.append(Airline(id=identity, name=name))
+        objects = [
+            Airline(id=identity, name=name) for identity, name in airlines.items()
+        ]
         self.session.bulk_save_objects(objects)
         self.session.commit()
 
@@ -91,9 +91,10 @@ class Database:
         Base.metadata.tables[Equipment.__tablename__].drop(bind=self.engine)
         Base.metadata.tables[Equipment.__tablename__].create(bind=self.engine)
 
-        objects = []
-        for identity, name in equipment.items():
-            objects.append(Equipment(id=identity, name=name))
+        objects = [
+            Equipment(id=identity, name=name)
+            for identity, name in equipment.items()
+        ]
         self.session.bulk_save_objects(objects)
         self.session.commit()
 
@@ -101,16 +102,15 @@ class Database:
         Base.metadata.tables[Airport.__tablename__].drop(bind=self.engine)
         Base.metadata.tables[Airport.__tablename__].create(bind=self.engine)
 
-        objects = []
-        for identity, fields in airports.items():
-            objects.append(
-                Airport(
-                    id=identity,
-                    latitude=fields["latitude"],
-                    longitude=fields["longitude"],
-                    name=fields["airport-name"],
-                )
+        objects = [
+            Airport(
+                id=identity,
+                latitude=fields["latitude"],
+                longitude=fields["longitude"],
+                name=fields["airport-name"],
             )
+            for identity, fields in airports.items()
+        ]
         self.session.bulk_save_objects(objects)
         self.session.commit()
 

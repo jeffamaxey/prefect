@@ -76,10 +76,6 @@ def watch_flow_run(
             )
         return
 
-    # The timestamp of the last displayed log so that we can scope each log query
-    # to logs that have not been shown yet
-    last_log_timestamp = None
-
     # A counter of states that have been displayed. Not a set so repeated states in the
     # backend are shown well.
     seen_states = 0
@@ -97,6 +93,7 @@ def watch_flow_run(
     poll_max = 10
     poll_factor = 1.3
 
+    last_log_timestamp = None
     while not flow_run.state.is_finished():
         # Get the latest state
         flow_run = flow_run.get_latest()
@@ -113,14 +110,12 @@ def watch_flow_run(
             )
 
         if (
-            stream_states  # The agent warning is counted as a state log
+            stream_states
             and total_time_elapsed >= agent_warning_initial_wait
             and agent_warning_time_elapsed > agent_warning_repeat_interval
-            and not (
-                flow_run.state.is_submitted()
-                or flow_run.state.is_running()
-                or flow_run.state.is_finished()
-            )
+            and not flow_run.state.is_submitted()
+            and not flow_run.state.is_running()
+            and not flow_run.state.is_finished()
         ):
             agent_msg = check_for_compatible_agents(flow_run.labels)
             yield FlowRunLog(
@@ -162,16 +157,8 @@ def watch_flow_run(
                 # not seen yet`
                 last_log_timestamp = logs[-1].timestamp
 
-        for flow_run_log in sorted(messages):
-            yield flow_run_log
-
-        if not messages:
-            # Delay the poll if there are no messages
-            poll_interval = int(poll_interval * poll_factor)
-        else:
-            # Otherwise reset to the min poll time for a fast query
-            poll_interval = poll_min
-
+        yield from sorted(messages)
+        poll_interval = poll_min if messages else int(poll_interval * poll_factor)
         poll_interval = min(poll_interval, poll_max)
         time.sleep(poll_interval)
         agent_warning_time_elapsed += poll_interval
@@ -599,7 +586,7 @@ class FlowRunView:
             task_runs = []
 
         # Combine with the provided `_cached_task_runs` iterable
-        task_runs = task_runs + list(_cached_task_runs or [])
+        task_runs += list(_cached_task_runs or [])
 
         return cls._from_flow_run_data(flow_run_data, task_runs=task_runs)
 
@@ -706,9 +693,9 @@ class FlowRunView:
             if map_index is None:
                 map_index = -1
 
-            # Check the cache
-            task_run_id = self._slug_index_to_cached_id.get((task_slug, map_index))
-            if task_run_id:
+            if task_run_id := self._slug_index_to_cached_id.get(
+                (task_slug, map_index)
+            ):
                 return self._cached_task_runs[task_run_id]
 
             result = TaskRunView.from_task_slug(

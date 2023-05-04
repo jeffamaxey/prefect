@@ -127,7 +127,7 @@ class FivetranSyncTask(Task):
             )
         # Start connector sync
         resp = session.post(
-            URL_CONNECTOR + "/force", auth=(api_key, api_secret), headers=headers
+            f"{URL_CONNECTOR}/force", auth=(api_key, api_secret), headers=headers
         )
 
         loop: bool = True

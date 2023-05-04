@@ -95,23 +95,23 @@ def test_populate_env_vars(monkeypatch, backend, config_with_api_key):
     env_vars = agent.populate_env_vars(TEST_FLOW_RUN_DATA)
 
     expected = os.environ.copy()
-    expected.update(
-        {
-            "PYTHONPATH": os.getcwd() + os.pathsep + expected.get("PYTHONPATH", ""),
-            "PREFECT__BACKEND": backend,
-            "PREFECT__CLOUD__API": prefect.config.cloud.api,
-            "PREFECT__CLOUD__API_KEY": config_with_api_key.cloud.api_key,
-            "PREFECT__CLOUD__TENANT_ID": config_with_api_key.cloud.tenant_id,
-            "PREFECT__CLOUD__AGENT__LABELS": str(DEFAULT_AGENT_LABELS),
-            "PREFECT__CONTEXT__FLOW_RUN_ID": "id",
-            "PREFECT__CONTEXT__FLOW_ID": "foo",
-            "PREFECT__CLOUD__USE_LOCAL_SECRETS": "false",
-            "PREFECT__CLOUD__SEND_FLOW_RUN_LOGS": "true",
-            "PREFECT__LOGGING__LEVEL": "INFO",
-            "PREFECT__ENGINE__FLOW_RUNNER__DEFAULT_CLASS": "prefect.engine.cloud.CloudFlowRunner",
-            "PREFECT__ENGINE__TASK_RUNNER__DEFAULT_CLASS": "prefect.engine.cloud.CloudTaskRunner",
-        }
-    )
+    expected |= {
+        "PYTHONPATH": os.getcwd()
+        + os.pathsep
+        + expected.get("PYTHONPATH", ""),
+        "PREFECT__BACKEND": backend,
+        "PREFECT__CLOUD__API": prefect.config.cloud.api,
+        "PREFECT__CLOUD__API_KEY": config_with_api_key.cloud.api_key,
+        "PREFECT__CLOUD__TENANT_ID": config_with_api_key.cloud.tenant_id,
+        "PREFECT__CLOUD__AGENT__LABELS": str(DEFAULT_AGENT_LABELS),
+        "PREFECT__CONTEXT__FLOW_RUN_ID": "id",
+        "PREFECT__CONTEXT__FLOW_ID": "foo",
+        "PREFECT__CLOUD__USE_LOCAL_SECRETS": "false",
+        "PREFECT__CLOUD__SEND_FLOW_RUN_LOGS": "true",
+        "PREFECT__LOGGING__LEVEL": "INFO",
+        "PREFECT__ENGINE__FLOW_RUNNER__DEFAULT_CLASS": "prefect.engine.cloud.CloudFlowRunner",
+        "PREFECT__ENGINE__TASK_RUNNER__DEFAULT_CLASS": "prefect.engine.cloud.CloudTaskRunner",
+    }
 
     assert env_vars == expected
 

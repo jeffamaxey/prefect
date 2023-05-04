@@ -129,7 +129,7 @@ class RunGreatExpectationsValidation(Task):
         self.batch_kwargs = batch_kwargs
         self.expectation_suite_name = expectation_suite_name
         self.context_root_dir = context_root_dir
-        self.runtime_environment = runtime_environment or dict()
+        self.runtime_environment = runtime_environment or {}
         self.run_name = run_name
         self.run_info_at_end = run_info_at_end
         self.disable_markdown_artifact = disable_markdown_artifact
@@ -232,8 +232,8 @@ class RunGreatExpectationsValidation(Task):
                 "errors in this task. Please upgrade great_expections to 0.13.8 or later."
             )
 
-        runtime_environment = runtime_environment or dict()
-        checkpoint_kwargs = checkpoint_kwargs or dict()
+        runtime_environment = runtime_environment or {}
+        checkpoint_kwargs = checkpoint_kwargs or {}
 
         # Load context if not provided directly
         if not context:

@@ -20,7 +20,7 @@ with Flow("Kafka Example") as flow:
     produce_20k = KafkaBatchProduce(
         bootstrap_servers=BOOTSTRAP_SERVER,
         topic=TOPIC,
-        messages=messages[0:20000],
+        messages=messages[:20000],
         flush_threshold=1000,
     )
 

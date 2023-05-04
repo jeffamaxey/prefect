@@ -51,9 +51,9 @@ def test_secret_value_depends_on_use_local_secrets(monkeypatch):
 
     secret = Secret(name="test")
     with set_temporary_config(
-        {"cloud.use_local_secrets": False, "cloud.api_key": None}
-    ):
-        with prefect.context(secrets=dict()):
+            {"cloud.use_local_secrets": False, "cloud.api_key": None}
+        ):
+        with prefect.context(secrets={}):
             with pytest.raises(ClientError):
                 secret.get()
 

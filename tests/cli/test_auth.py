@@ -191,7 +191,7 @@ def test_create_key(patch_post, cloud_api, quiet, expires):
 
     result = runner.invoke(auth, ["create-key", "-n", "this-name"] + args)
     assert result.exit_code == 0
-    assert "this-key" in result.output if not quiet else "this-key\n" == result.output
+    assert result.output == "this-key\n" if quiet else "this-key" in result.output
 
     # Check for the correct API call
     inputs = json.loads(post.call_args[1]["json"]["variables"])["input"]
@@ -230,7 +230,7 @@ def test_create_key_expiration_in_the_past(patch_post, cloud_api):
 
 
 def test_create_key_fails_on_user_retrieval(patch_post, cloud_api):
-    patch_post(dict())
+    patch_post({})
 
     runner = CliRunner()
     result = runner.invoke(auth, ["create-key", "-n", "name"])
@@ -239,7 +239,7 @@ def test_create_key_fails_on_user_retrieval(patch_post, cloud_api):
 
 
 def test_create_key_fails_on_key_creation(patch_posts, cloud_api):
-    patch_posts([dict(data=dict(auth_info={"user_id": "this-id"})), dict()])
+    patch_posts([dict(data=dict(auth_info={"user_id": "this-id"})), {}])
 
     runner = CliRunner()
     result = runner.invoke(auth, ["create-key", "-n", "name"])
@@ -288,7 +288,7 @@ def test_revoke_key(patch_post, cloud_api):
 
 
 def test_revoke_key_fails(patch_post, cloud_api):
-    patch_post(dict())
+    patch_post({})
 
     runner = CliRunner()
     result = runner.invoke(auth, ["revoke-key", "--id", "id"])

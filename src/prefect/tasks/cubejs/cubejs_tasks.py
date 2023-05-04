@@ -178,9 +178,6 @@ class CubeJSQueryTask(Task):
 
         params = {"query": json.dumps(query)}
 
-        # Retrieve data from Cube.js
-        data = cubejs_client.get_data(
+        return cubejs_client.get_data(
             params=params, include_generated_sql=include_generated_sql
         )
-
-        return data

@@ -271,23 +271,19 @@ class DatastoreUpload(Task):
             raise ValueError("A path must be provided.")
 
         if isinstance(path, str) and os.path.isdir(path):
-            data_reference = datastore.upload(
+            return datastore.upload(
                 src_dir=path,
                 target_path=target_path,
                 overwrite=overwrite,
                 show_progress=False,
             )
-            return data_reference
-
         if isinstance(path, str):
             path = [path]
 
-        data_reference = datastore.upload_files(
+        return datastore.upload_files(
             files=path,
             relative_root=relative_root,
             target_path=target_path,
             overwrite=overwrite,
             show_progress=False,
         )
-
-        return data_reference

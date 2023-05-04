@@ -57,13 +57,11 @@ class CubeJSClient:
             - Cube.js API base url.
         """
         cube_base_url = self.__CUBEJS_CLOUD_BASE_URL
-        if self.subdomain:
-            cube_base_url = (
-                f"{cube_base_url.format(subdomain=self.subdomain)}/cubejs-api"
-            )
-        else:
-            cube_base_url = self.url
-        return cube_base_url
+        return (
+            f"{cube_base_url.format(subdomain=self.subdomain)}/cubejs-api"
+            if self.subdomain
+            else self.url
+        )
 
     def _get_query_api_url(self) -> str:
         """
@@ -132,21 +130,20 @@ class CubeJSClient:
         while not self.max_wait_time or elapsed_wait_time <= self.max_wait_time:
 
             with session.get(url=api_url, params=params) as response:
-                if response.status_code == 200:
-                    data = response.json()
-
-                    if "error" in data.keys() and "Continue wait" in data["error"]:
-                        time.sleep(self.wait_api_call_secs)
-                        elapsed_wait_time += self.wait_api_call_secs
-                        continue
-
-                    else:
-                        return data
-
-                else:
+                if response.status_code != 200:
                     raise FAIL(
                         message=f"Cube.js load API failed! Error is: {response.reason}"
                     )
+                data = response.json()
+
+                if (
+                    "error" not in data.keys()
+                    or "Continue wait" not in data["error"]
+                ):
+                    return data
+
+                time.sleep(self.wait_api_call_secs)
+                elapsed_wait_time += self.wait_api_call_secs
         msg = f"Cube.js load API took longer than {self.max_wait_time} seconds to provide a response."
         raise FAIL(message=msg)
 

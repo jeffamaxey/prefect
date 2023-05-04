@@ -493,10 +493,8 @@ def test_map_tracks_non_mapped_upstream_tasks(executor):
     assert s.is_failed()
     assert all(sub.is_failed() for sub in s.result[res].map_states)
     assert all(
-        [
-            isinstance(sub, prefect.engine.state.TriggerFailed)
-            for sub in s.result[res].map_states
-        ]
+        isinstance(sub, prefect.engine.state.TriggerFailed)
+        for sub in s.result[res].map_states
     )
 
 
@@ -743,7 +741,7 @@ def test_task_map_downstreams_handle_single_failures(executor):
     assert state.is_failed()
     assert len(state.result[dived].result) == 3
     assert isinstance(state.result[big_list], prefect.engine.state.TriggerFailed)
-    assert state.result[again].result[0::2] == [1, 3]
+    assert state.result[again].result[::2] == [1, 3]
     assert isinstance(
         state.result[again].map_states[1], prefect.engine.state.TriggerFailed
     )
@@ -907,9 +905,7 @@ def test_task_map_with_no_upstream_results_and_a_mapped_state(executor):
 def test_unmapped_on_mapped(executor):
     @prefect.task
     def add_one(x):
-        if isinstance(x, list):
-            return x + x
-        return x + 1
+        return x + x if isinstance(x, list) else x + 1
 
     with Flow("wild") as flow:
         res = add_one.map(unmapped(add_one.map([1, 2, 3])))
@@ -1207,11 +1203,13 @@ class TestFlatMap:
         "executor", ["local", "sync", "mproc", "mthread"], indirect=True
     )
     def test_flatmap_nested_noniterable_input(self, executor, caplog):
+
+
+
         class NestTaskWithNonIterable(Task):
             def run(self, x):
-                if x == 2:
-                    return x
-                return [x]
+                return x if x == 2 else [x]
+
 
         ll = ListTask()
         nest = NestTaskWithNonIterable()
@@ -1224,11 +1222,9 @@ class TestFlatMap:
         if not isinstance(executor, prefect.executors.dask.DaskExecutor):
             # When multiprocessing with Dask, caplog fails
             assert any(
-                [
-                    "`flatten` was used on upstream task that did not return an iterable"
-                    in record.message
-                    for record in caplog.records
-                ]
+                "`flatten` was used on upstream task that did not return an iterable"
+                in record.message
+                for record in caplog.records
             ), "Warning is logged"
         assert state.result[z].result == [2, 3, 4]
 

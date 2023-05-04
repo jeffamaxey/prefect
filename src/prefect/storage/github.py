@@ -144,9 +144,7 @@ class GitHub(Storage):
         """
         if flow.name in self:
             raise ValueError(
-                'Name conflict: Flow with the name "{}" is already present in this storage.'.format(
-                    flow.name
-                )
+                f'Name conflict: Flow with the name "{flow.name}" is already present in this storage.'
             )
 
         self.flows[flow.name] = self.path  # type: ignore

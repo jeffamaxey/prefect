@@ -501,20 +501,13 @@ def test_run_local_handles_flow_load_failure_with_missing_module_attr(tmpdir):
 
 
 @pytest.mark.parametrize("execute_flag", (["--execute"], []))
-@pytest.mark.parametrize(
-    "cli_args,cloud_kwargs",
-    [
-        (
+@pytest.mark.parametrize("cli_args,cloud_kwargs", [(
             ["--param", "a=2", "--param", "b=[1,2,3]"],
             dict(parameters={"a": 2, "b": [1, 2, 3]}),
-        ),
-        (
+        ), (
             ["--context", "a=1", "--context", 'b={"nested": 2}'],
             dict(context={"a": 1, "b": {"nested": 2}}),
-        ),
-        (["--label", "foo", "--label", "bar"], dict(labels=["foo", "bar"])),
-        (["--run-name", "my-run"], dict(run_name="my-run")),
-        (
+        ), (["--label", "foo", "--label", "bar"], dict(labels=["foo", "bar"])), (["--run-name", "my-run"], dict(run_name="my-run")), (
             ["--log-level", "DEBUG"],
             dict(
                 run_config=UniversalRun(
@@ -522,16 +515,7 @@ def test_run_local_handles_flow_load_failure_with_missing_module_attr(tmpdir):
                     env={"ENV": "VAL", "PREFECT__LOGGING__LEVEL": "DEBUG"}
                 )
             ),
-        ),
-        (
-            # No logs does not alter the log level for cloud runs, we just don't query
-            # for them in `watch_flow_run`
-            ["--no-logs"],
-            dict(),
-        ),
-        (["--idempotency-key", "foo-key"], dict(idempotency_key="foo-key")),
-    ],
-)
+        ), (["--no-logs"], {}), (["--idempotency-key", "foo-key"], dict(idempotency_key="foo-key"))])
 def test_run_cloud_creates_flow_run(
     cloud_mocks, cli_args, cloud_kwargs, execute_flag, monkeypatch
 ):

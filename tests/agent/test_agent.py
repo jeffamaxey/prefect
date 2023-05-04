@@ -27,9 +27,9 @@ def test_multiple_agent_init_doesnt_duplicate_logs(cloud_api):
 def test_agent_config_options(cloud_api):
     with set_temporary_config({"cloud.api_key": "TEST_KEY"}):
         agent = Agent()
-        assert agent.agent_config_id == None
+        assert agent.agent_config_id is None
         assert agent.labels == []
-        assert agent.env_vars == dict()
+        assert agent.env_vars == {}
         assert agent.max_polls is None
         assert agent.client.api_key == "TEST_KEY"
         assert agent.name == "agent"

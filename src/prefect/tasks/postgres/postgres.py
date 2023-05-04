@@ -331,7 +331,7 @@ class PostgresFetch(Task):
         # try to execute query
         # context manager automatically rolls back failed transactions
         try:
-            with conn, conn.cursor() as cursor:
+            with (conn, conn.cursor() as cursor):
                 cursor.execute(query=query, vars=data)
 
                 # fetch results
@@ -349,7 +349,7 @@ class PostgresFetch(Task):
                     names_list = [
                         col_description[0] for col_description in cursor.description
                     ]
-                    header = [tuple(col_name for col_name in names_list)]
+                    header = [tuple(names_list)]
 
                     if isinstance(records, tuple):
                         records = [records]
@@ -358,6 +358,5 @@ class PostgresFetch(Task):
 
             return records
 
-        # ensure connection is closed
         finally:
             conn.close()

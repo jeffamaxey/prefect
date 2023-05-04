@@ -24,7 +24,7 @@ def generate_states(success=0, failed=0, skipped=0, pending=0, retrying=0) -> di
         Retrying: retrying,
     }
 
-    states = dict()
+    states = {}
     for state, count in state_counts.items():
         for _ in range(count):
             states[Edge(Task(), Task())] = state()
@@ -348,7 +348,7 @@ def test_some_successful_is_pickleable():
     ],
 )
 def test_standard_triggers_return_true_for_empty_upstream(trigger):
-    assert trigger(dict()) is True
+    assert trigger({}) is True
 
 
 @pytest.mark.parametrize("func", [triggers.some_failed, triggers.some_successful])

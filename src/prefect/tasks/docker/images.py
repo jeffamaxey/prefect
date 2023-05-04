@@ -87,7 +87,7 @@ class ListImages(Task):
             name=repository_name,
             all=all_layers,
             filters=filters,
-            **(extra_docker_kwargs or dict()),
+            **extra_docker_kwargs or {}
         )
         self.logger.debug(f"Listed images from {repository_name}")
 
@@ -181,10 +181,10 @@ class PullImage(Task):
                 tag=tag,
                 stream=stream_logs,
                 decode=True,
-                **(extra_docker_kwargs or dict()),
+                **extra_docker_kwargs or {}
             )
             if isinstance(api_result, str):
-                return "".join(line for line in api_result.split("\r"))
+                return "".join(api_result.split("\r"))
             for line in api_result:
                 status_line = line.get("status")
                 if status_line and stream_logs:
@@ -273,7 +273,7 @@ class PushImage(Task):
         self.logger.debug(f"Pushing image {repository}:{tag} to the registry")
         client = docker.APIClient(base_url=docker_server_url, version="auto")
         api_result = client.push(
-            repository=repository, tag=tag, **(extra_docker_kwargs or dict())
+            repository=repository, tag=tag, **extra_docker_kwargs or {}
         )
         self.logger.debug(f"Pushed image {repository}:{tag} to the registry")
         return api_result
@@ -347,7 +347,7 @@ class RemoveImage(Task):
 
         client = docker.APIClient(base_url=docker_server_url, version="auto")
 
-        client.remove_image(image=image, force=force, **(extra_docker_kwargs or dict()))
+        client.remove_image(image=image, force=force, **extra_docker_kwargs or {})
         self.logger.debug(f"Removed image {image}")
 
 
@@ -444,7 +444,7 @@ class TagImage(Task):
             repository=repository,
             tag=tag,
             force=force,
-            **(extra_docker_kwargs or dict()),
+            **extra_docker_kwargs or {}
         )
         self.logger.debug(f"Tagged image {repository}/{image}:{tag}")
         return api_result
@@ -554,17 +554,16 @@ class BuildImage(Task):
 
         client = docker.APIClient(base_url=docker_server_url, version="auto")
 
-        payload = [
-            line
-            for line in client.build(
+        payload = list(
+            client.build(
                 path=path,
                 tag=tag,
                 nocache=nocache,
                 rm=rm,
                 forcerm=forcerm,
-                **(extra_docker_kwargs or dict()),
+                **extra_docker_kwargs or {}
             )
-        ]
+        )
         self.logger.debug(f"Built image from {path} with tag {tag}")
         output = [
             json.loads(line.decode("utf-8"))

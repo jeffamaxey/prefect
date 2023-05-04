@@ -369,14 +369,10 @@ class SnowflakeQueriesFromFile(Task):
             query = Path(file_path).read_text()
 
             with conn:
-                result = []
                 cursor_list = conn.execute_string(query, cursor_class=cursor_type)
 
-                for cursor in cursor_list:
-                    result.append(cursor.fetchall())
-                    # return fetch for each cursor
+                result = [cursor.fetchall() for cursor in cursor_list]
             return result
 
-        # ensure connection is closed
         finally:
             conn.close()

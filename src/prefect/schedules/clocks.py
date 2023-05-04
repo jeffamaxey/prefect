@@ -19,7 +19,7 @@ class ClockEvent:
         labels: List[str] = None,
     ) -> None:
         self.start_time = start_time
-        self.parameter_defaults = parameter_defaults or dict()
+        self.parameter_defaults = parameter_defaults or {}
         self.labels = labels
 
     def __eq__(self, other: Any) -> bool:
@@ -36,9 +36,7 @@ class ClockEvent:
     def __gt__(self, other: Union[datetime, "ClockEvent"]) -> bool:
         if not isinstance(other, (ClockEvent, datetime)):
             raise TypeError(
-                "'>' not supported between instances of 'ClockEvent' and {}".format(
-                    type(other).__name__
-                )
+                f"'>' not supported between instances of 'ClockEvent' and {type(other).__name__}"
             )
         else:
             return self.start_time > other
@@ -46,15 +44,13 @@ class ClockEvent:
     def __lt__(self, other: Union[datetime, "ClockEvent"]) -> bool:
         if not isinstance(other, (ClockEvent, datetime)):
             raise TypeError(
-                "'<' not supported between instances of 'ClockEvent' and {}".format(
-                    type(other).__name__
-                )
+                f"'<' not supported between instances of 'ClockEvent' and {type(other).__name__}"
             )
         else:
             return self.start_time < other
 
     def __repr__(self) -> str:
-        return "<%s,%s,%s>" % (self.start_time, self.labels, self.parameter_defaults)
+        return f"<{self.start_time},{self.labels},{self.parameter_defaults}>"
 
 
 class Clock:
@@ -85,7 +81,7 @@ class Clock:
             end_date = pendulum.instance(end_date)
         self.start_date = start_date
         self.end_date = end_date
-        self.parameter_defaults = parameter_defaults or dict()
+        self.parameter_defaults = parameter_defaults or {}
         self.labels = labels
 
     def events(self, after: datetime = None) -> Iterable[ClockEvent]:
@@ -261,7 +257,7 @@ class CronClock(Clock):
     ):
         # build cron object to check the cron string - will raise an error if it's invalid
         if not croniter.is_valid(cron):
-            raise ValueError("Invalid cron string: {}".format(cron))
+            raise ValueError(f"Invalid cron string: {cron}")
         self.cron = cron
         self.day_or = True if day_or is None else day_or
         super().__init__(

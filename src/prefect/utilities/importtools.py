@@ -23,8 +23,7 @@ def import_object(name: str) -> Any:
 
     # Try importing it first so we support "module" or "module.sub_module"
     try:
-        module = importlib.import_module(name)
-        return module
+        return importlib.import_module(name)
     except ImportError:
         # If no subitem was included raise the import error
         if "." not in name:

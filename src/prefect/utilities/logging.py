@@ -316,10 +316,7 @@ def get_logger(name: str = None) -> logging.Logger:
         - logging.Logger: a configured logging object with the appropriate name
     """
 
-    if name is None:
-        return prefect_logger
-    else:
-        return prefect_logger.getChild(name)
+    return prefect_logger if name is None else prefect_logger.getChild(name)
 
 
 @contextmanager

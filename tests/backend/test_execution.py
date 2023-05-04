@@ -93,7 +93,7 @@ class TestExecuteFlowRunInSubprocess:
             "PREFECT__ENGINE__FLOW_RUNNER__DEFAULT_CLASS": "prefect.engine.cloud.CloudFlowRunner",
             "PREFECT__ENGINE__TASK_RUNNER__DEFAULT_CLASS": "prefect.engine.cloud.CloudTaskRunner",
         }
-        expected_env = {**base_env, **generated_env}
+        expected_env = base_env | generated_env
 
         # Calls the correct command w/ environment variables
         mocks.subprocess.run.assert_called_once_with(

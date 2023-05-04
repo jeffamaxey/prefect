@@ -126,7 +126,7 @@ class LocalAgent(Agent):
                 flow_run.id,
                 type(storage).__name__,
             )
-            raise TypeError("Unsupported Storage type: %s" % type(storage).__name__)
+            raise TypeError(f"Unsupported Storage type: {type(storage).__name__}")
 
         run_config = self._get_run_config(flow_run, LocalRun)
         env = self.populate_env_vars(flow_run, run_config=run_config)
@@ -153,11 +153,9 @@ class LocalAgent(Agent):
         )
 
         self.processes.add(p)
-        self.logger.debug(
-            "Submitted flow run {} to process PID {}".format(flow_run.id, p.pid)
-        )
+        self.logger.debug(f"Submitted flow run {flow_run.id} to process PID {p.pid}")
 
-        return "PID: {}".format(p.pid)
+        return f"PID: {p.pid}"
 
     def populate_env_vars(
         self, flow_run: GraphQLResult, run_config: LocalRun = None
@@ -178,7 +176,7 @@ class LocalAgent(Agent):
         env = os.environ.copy()
 
         # 2. Logging config
-        env.update({"PREFECT__LOGGING__LEVEL": config.logging.level})
+        env["PREFECT__LOGGING__LEVEL"] = config.logging.level
 
         # 3. PYTHONPATH
         # XXX: I'm 99% sure this isn't needed, a new Python process should
@@ -195,7 +193,7 @@ class LocalAgent(Agent):
         env["PYTHONPATH"] = os.pathsep.join(python_path)
 
         # 4. Values set on the agent via `--env`
-        env.update(self.env_vars)
+        env |= self.env_vars
 
         # 5. Values set on a LocalRun RunConfig (if present
         if run_config is not None and run_config.env is not None:
@@ -277,8 +275,7 @@ class LocalAgent(Agent):
         ) as conf_file:
             conf = conf_file.read()
 
-        add_opts = ""
-        add_opts += "-f " if show_flow_logs else ""
+        add_opts = "" + ("-f " if show_flow_logs else "")
         add_opts += " ".join("-l {label} ".format(label=label) for label in labels)
         add_opts += " ".join(
             "-e {k}={v} ".format(k=k, v=v) for k, v in env_vars.items()

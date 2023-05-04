@@ -131,7 +131,7 @@ extras["base_library_ci"] = (
 cmdclass = {
     "verify_version": VerifyVersionCommand,
 }
-cmdclass.update(versioneer.get_cmdclass())
+cmdclass |= versioneer.get_cmdclass()
 
 setup(
     name="prefect",

@@ -161,7 +161,7 @@ class DremioFetch(Task):
         )
         client_auth_middleware = DremioClientAuthMiddlewareFactory()
         client = flight.FlightClient(
-            "{}://{}:{}".format(scheme, hostname, flightport),
+            f"{scheme}://{hostname}:{flightport}",
             middleware=[client_auth_middleware],
             **connection_args,
         )
